@@ -1,0 +1,25 @@
+# Python
+__pycache__/
+*.pyc
+venv/
+*.egg-info/
+
+# Ortam değişkenleri (şifre/API key gibi hassas bilgiler)
+.env
+
+# Veritabanı dosyası (yerel test verisi, repoya gitmemeli)
+*.db
+
+# Docker
+# (Dockerfile ve docker-compose.yml zaten repoya girecek, bunlar hariç değil)
+
+# IDE/Editör dosyaları
+.vscode/
+.idea/
+
+# İşletim sistemi dosyaları
+.DS_Store
+Thumbs.db
+
+# Frontend (ileride node_modules çok yer kaplar, asla repoya girmemeli)
+node_modules/
