@@ -10,6 +10,8 @@ venv/
 # Veritabanı dosyası (yerel test verisi, repoya gitmemeli)
 *.db
 
+dataset/
+
 # Docker
 # (Dockerfile ve docker-compose.yml zaten repoya girecek, bunlar hariç değil)
 

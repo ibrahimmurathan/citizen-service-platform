@@ -28,3 +28,6 @@ class ComplaintResponse(BaseModel):
     
     class Config:
         from_attributes = True
+
+class ComplaintStatusUpdate(BaseModel):
+    status: ComplaintStatus
