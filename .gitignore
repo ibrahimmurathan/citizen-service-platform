@@ -25,3 +25,6 @@ Thumbs.db
 
 # Frontend (ileride node_modules çok yer kaplar, asla repoya girmemeli)
 node_modules/
+
+# Model dosyası
+ml_model/
