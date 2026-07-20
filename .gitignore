@@ -11,6 +11,7 @@ venv/
 *.db
 
 dataset/
+backend/data
 
 # Docker
 # (Dockerfile ve docker-compose.yml zaten repoya girecek, bunlar hariç değil)
