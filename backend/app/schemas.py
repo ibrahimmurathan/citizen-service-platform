@@ -3,21 +3,19 @@ from typing  import Optional
 from pydantic import BaseModel
 from .models import ComplaintCategory, ComplaintStatus
 
-class ComplaintCreate(BaseModel):
-    image_path: str
-    full_name: str
-    email: Optional[str] = None
-    phone_number: str
-    description: Optional[str] = None
-    latitude: float
-    longitude: float
-    
+class UserInfo(BaseModel):
+    id: int
+    user_full_name: str
+    user_email: str
+    user_phone_number: str
+
+    class Config:
+        from_attributes = True
+   
 class ComplaintResponse(BaseModel):
     id: int
     image_path: str
-    full_name: str
-    email: Optional[str] = None
-    phone_number: str
+    user: UserInfo
     description: Optional[str] = None
     predicted_category: ComplaintCategory
     confidence_score: float
@@ -25,7 +23,7 @@ class ComplaintResponse(BaseModel):
     longitude: float
     status: ComplaintStatus
     created_at: datetime
-    
+
     class Config:
         from_attributes = True
 
@@ -38,10 +36,12 @@ class UserRegister(BaseModel):
     user_phone_number: str
     password: str
 
-class UserLogin(BaseModel):
+class LoginRequest(BaseModel):
     user_email: str
     password: str
 
 class Token(BaseModel):
     access_token: str
     token_type: str = "bearer"
+    role: str
+    full_name : str

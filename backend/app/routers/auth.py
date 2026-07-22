@@ -25,14 +25,19 @@ def register(user_data: schemas.UserRegister, db: Session = Depends(get_db)):
     db.refresh(new_user)
 
     token = create_access_token({"sub": str(new_user.id), "role": "user"})
-    return {"access_token": token}
+    return {"access_token": token, "role": "user", "full_name": new_user.user_full_name}
 
 
 @router.post("/login", response_model=schemas.Token)
-def login(credentials: schemas.UserLogin, db: Session = Depends(get_db)):
-    user = db.query(models.User).filter(models.User.user_email == credentials.user_email).first()
-    if not user or not verify_password(credentials.password, user.user_hashed_password):
-        raise HTTPException(status_code=401, detail="Email veya şifre hatalı")
+def login(credentials: schemas.LoginRequest, db: Session = Depends(get_db)):
+    admin = db.query(models.Admin).filter(models.Admin.admin_email == credentials.user_email).first()
+    if admin and verify_password(credentials.password, admin.admin_hashed_password):
+        token = create_access_token({"sub": str(admin.id), "role": "admin"})
+        return {"access_token": token, "role": "admin", "full_name": admin.admin_full_name}
 
-    token = create_access_token({"sub": str(user.id), "role": "user"})
-    return {"access_token": token}
+    user = db.query(models.User).filter(models.User.user_email == credentials.user_email).first()
+    if user and verify_password(credentials.password, user.user_hashed_password):
+        token = create_access_token({"sub": str(user.id), "role": "user"})
+        return {"access_token": token, "role": "user", "full_name": user.user_full_name}
+
+    raise HTTPException(status_code=401, detail="Email veya şifre hatalı")

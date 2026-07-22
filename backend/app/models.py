@@ -2,6 +2,7 @@ import enum
 from datetime import datetime
 from sqlalchemy import Column, Integer, String, Float, Text, Enum, DateTime, ForeignKey
 from .database import Base
+from sqlalchemy.orm import relationship
 
 
 class ComplaintCategory(str, enum.Enum):
@@ -24,6 +25,7 @@ class Complaint(Base):
     id = Column(Integer, primary_key=True, index=True)
     image_path = Column(String)
     user_id = Column(Integer, ForeignKey("users.id"))
+    user = relationship("User")
     description = Column(Text, nullable=True)
     predicted_category = Column(Enum(ComplaintCategory))
     confidence_score = Column(Float)
@@ -51,3 +53,4 @@ class Admin(Base):
     admin_phone_number = Column(String)
     admin_hashed_password = Column(String)
     created_at = Column(DateTime, default=datetime.utcnow)
+    admin_category = Column(Enum(ComplaintCategory))

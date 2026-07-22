@@ -7,6 +7,7 @@ from .. import models
 from ..database import get_db
 from ..services.prediction_service import get_prediction
 from ..models import ComplaintStatus
+from ..services.auth_service import get_current_user
 
 def save_upload_file(contents, filename):
     unique_filename = f"{uuid.uuid4()}.{filename.split('.')[-1]}"
@@ -24,13 +25,11 @@ router = APIRouter(prefix="/complaints", tags=["complaints"])
 
 async def create_complaint(
     file: UploadFile = File(...),
-    full_name: str = Form(...),
-    phone_number: str = Form(...),
-    email: str = Form(None),
     description: str = Form(None),
     latitude: float = Form(...),
     longitude: float = Form(...),
     db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
 ):
     contents = await file.read()
 
@@ -40,9 +39,7 @@ async def create_complaint(
 
     new_complaint = models.Complaint(
         image_path=image_path,
-        full_name=full_name,
-        phone_number=phone_number,
-        email=email,
+        user_id=current_user.id,
         description=description,
         latitude=latitude,
         longitude=longitude,

@@ -1,26 +1,28 @@
 import { useState } from "react";
 import PhotoUpload from "../components/PhotoUpload";
-import ComplaintForm from "../components/ComplaintForm";
 import LocationPicker from "../components/LocationPicker";
-import "./SubmitComplaint.css";
+import { submitComplaint } from "../services/api";
+import { useAuth } from "../context/AuthContext";
 
 function SubmitComplaint() {
   const [file, setFile] = useState(null);
-  const [formData, setFormData] = useState({
-    fullName: "",
-    phoneNumber: "",
-    email: "",
-    description: "",
-  });
+  const [description, setDescription] = useState("");
   const [location, setLocation] = useState(null);
   const [submitStatus, setSubmitStatus] = useState(null);
   const [statusType, setStatusType] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [resetKey, setResetKey] = useState(0);
 
+  const { token } = useAuth();
+
   const handleSubmit = async () => {
-    if (!file || !formData.fullName || !formData.phoneNumber || !location) {
-      setSubmitStatus("Lütfen fotoğraf, ad-soyad, telefon ve konum bilgilerini eksiksiz doldurun.");
+    if (!token) {
+      setSubmitStatus("Şikayet gönderebilmek için giriş yapmalısınız.");
+      setStatusType("error");
+      return;
+    }
+    if (!file || !location) {
+      setSubmitStatus("Lütfen fotoğraf ve konum bilgilerini eksiksiz doldurun.");
       setStatusType("error");
       return;
     }
@@ -30,30 +32,17 @@ function SubmitComplaint() {
 
     const data = new FormData();
     data.append("file", file);
-    data.append("full_name", formData.fullName);
-    data.append("phone_number", formData.phoneNumber);
-    data.append("email", formData.email);
-    data.append("description", formData.description);
+    data.append("description", description);
     data.append("latitude", location.latitude);
     data.append("longitude", location.longitude);
 
     try {
-      const response = await fetch("http://localhost:8000/complaints", {
-        method: "POST",
-        body: data,
-      });
-
-      if (!response.ok) {
-        throw new Error("Sunucu hatası");
-      }
-
-      const result = await response.json();
+      const result = await submitComplaint(data, token);
       setSubmitStatus("Şikayetiniz başarıyla gönderildi! Takip numaranız: " + result.id);
       setStatusType("success");
 
-      // Formu ve alt component'leri sıfırla
       setFile(null);
-      setFormData({ fullName: "", phoneNumber: "", email: "", description: "" });
+      setDescription("");
       setLocation(null);
       setResetKey((prev) => prev + 1);
     } catch (error) {
@@ -74,7 +63,11 @@ function SubmitComplaint() {
       </div>
 
       <div className="form-section">
-        <ComplaintForm key={`form-${resetKey}`} onFormChange={setFormData} />
+        <textarea
+          placeholder="Açıklama (opsiyonel)"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+        />
       </div>
 
       <div className="form-section">
