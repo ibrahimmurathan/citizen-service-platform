@@ -13,7 +13,7 @@ MODEL_PATH = os.path.join(os.path.dirname(__file__), "..", "..", "ml_model")
 trained_model = AutoModelForImageClassification.from_pretrained(MODEL_PATH)
 model_processor = AutoImageProcessor.from_pretrained(MODEL_PATH)
 
-# Model her zaman aynı çıkarım modunda kalsın diye (eğitim moduna geçmesin)
+# Model eğitim moduna geçmesin
 trained_model.eval()
 
 

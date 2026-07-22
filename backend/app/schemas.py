@@ -31,3 +31,17 @@ class ComplaintResponse(BaseModel):
 
 class ComplaintStatusUpdate(BaseModel):
     status: ComplaintStatus
+    
+class UserRegister(BaseModel):
+    user_full_name: str
+    user_email: str
+    user_phone_number: str
+    password: str
+
+class UserLogin(BaseModel):
+    user_email: str
+    password: str
+
+class Token(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
