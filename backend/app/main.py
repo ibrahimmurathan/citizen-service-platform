@@ -3,9 +3,11 @@ from .routers import predict, complaints, auth
 from .database import Base, engine
 from . import models 
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 
 Base.metadata.create_all(bind=engine)
 app = FastAPI()
+app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
 app.include_router(predict.router)
 app.include_router(complaints.router)

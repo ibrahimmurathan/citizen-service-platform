@@ -32,7 +32,7 @@ function LocationPicker({ onLocationChange }) {
     <div>
       <p>Şikayetin konumunu haritadan seçin:</p>
       <MapContainer
-        center={[39.925, 32.836]}
+        center={[36.983, 35.317]}
         zoom={13}
         style={{ height: "300px", width: "100%" }}
       >

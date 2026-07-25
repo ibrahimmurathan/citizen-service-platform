@@ -4,17 +4,16 @@ __pycache__/
 venv/
 *.egg-info/
 
-# Ortam değişkenleri (şifre/API key gibi hassas bilgiler)
+# Ortam değişkenleri
 .env
 
-# Veritabanı dosyası (yerel test verisi, repoya gitmemeli)
+# Veritabanı dosyası
 *.db
 
 dataset/
 backend/data
+backend/uploads
 
-# Docker
-# (Dockerfile ve docker-compose.yml zaten repoya girecek, bunlar hariç değil)
 
 # IDE/Editör dosyaları
 .vscode/
@@ -24,7 +23,7 @@ backend/data
 .DS_Store
 Thumbs.db
 
-# Frontend (ileride node_modules çok yer kaplar, asla repoya girmemeli)
+# Frontend
 node_modules/
 
 # Model dosyası

@@ -1,0 +1,167 @@
+.admin-panel {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 24px;
+  font-family: system-ui, sans-serif;
+}
+
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.admin-map-wrapper {
+  margin-bottom: 24px;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.complaint-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+.complaint-card {
+  background: white;
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  display: flex;
+  flex-direction: column;
+  cursor: pointer;
+}
+
+.complaint-image-wrapper {
+  position: relative;
+}
+
+.complaint-image {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+  background-color: #f0f0f0;
+  display: block;
+}
+
+.image-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  color: white;
+  font-size: 14px;
+}
+
+.complaint-image-wrapper:hover .image-overlay {
+  opacity: 1;
+}
+
+.complaint-info {
+  padding: 14px;
+}
+
+.complaint-meta {
+  font-size: 14px;
+  color: #444;
+  margin-bottom: 8px;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-beklemede {
+  background-color: #fef9c3;
+}
+
+.status-inceleniyor {
+  background-color: #dbeafe;
+}
+
+.status-cozuldu {
+  background-color: #dcfce7;
+}
+
+.status-reddedildi {
+  background-color: #fee2e2;
+}
+
+.error-text {
+  color: #991b1b;
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-card {
+  background: white;
+  border-radius: 12px;
+  max-width: 420px;
+  width: 90%;
+  position: relative;
+  overflow: hidden;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  background: rgba(0, 0, 0, 0.4);
+  border: none;
+  border-radius: 50%;
+  width: 28px;
+  height: 28px;
+  font-size: 18px;
+  cursor: pointer;
+  color: white;
+  z-index: 1;
+  line-height: 1;
+}
+
+.modal-image {
+  width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+  background-color: #f0f0f0;
+  display: block;
+}
+
+.image-dimensions {
+  display: block;
+  text-align: center;
+  padding: 6px;
+  font-size: 12px;
+  color: #666;
+  background: #f4f6f9;
+}
+
+.modal-info {
+  padding: 16px;
+}

@@ -3,6 +3,7 @@ import PhotoUpload from "../components/PhotoUpload";
 import LocationPicker from "../components/LocationPicker";
 import { submitComplaint } from "../services/api";
 import { useAuth } from "../context/AuthContext";
+import "./SubmitComplaint.css";
 
 function SubmitComplaint() {
   const [file, setFile] = useState(null);
@@ -55,34 +56,43 @@ function SubmitComplaint() {
   };
 
   return (
-    <div className="submit-complaint">
-      <h2>Şikayet Bildir</h2>
-
-      <div className="form-section">
-        <PhotoUpload key={`photo-${resetKey}`} onFileSelect={setFile} />
-      </div>
-
-      <div className="form-section">
-        <textarea
-          placeholder="Açıklama (opsiyonel)"
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-        />
-      </div>
-
-      <div className="form-section">
-        <LocationPicker key={`location-${resetKey}`} onLocationChange={setLocation} />
-      </div>
-
-      <button onClick={handleSubmit} disabled={isSubmitting} className="submit-button">
-        {isSubmitting ? "Gönderiliyor..." : "Gönder"}
-      </button>
-
-      {submitStatus && (
-        <p className={statusType === "success" ? "status-success" : "status-error"}>
-          {submitStatus}
+    <div className="submit-page">
+      <div className="submit-card">
+        <h1 className="submit-title">Şikayet Bildir</h1>
+        <p className="submit-subtitle">
+          Şehrimizle ilgili sorunları fotoğraflayarak bize iletin, ilgili birime yönlendirelim.
         </p>
-      )}
+
+        <div className="submit-section">
+          <label className="section-label">1. Fotoğraf</label>
+          <PhotoUpload key={`photo-${resetKey}`} onFileSelect={setFile} />
+        </div>
+
+        <div className="submit-section">
+          <label className="section-label">2. Açıklama (opsiyonel)</label>
+          <textarea
+            className="description-input"
+            placeholder="Sorunla ilgili kısa bir açıklama yazabilirsiniz..."
+            value={description}
+            onChange={(e) => setDescription(e.target.value)}
+          />
+        </div>
+
+        <div className="submit-section">
+          <label className="section-label">3. Konum</label>
+          <LocationPicker key={`location-${resetKey}`} onLocationChange={setLocation} />
+        </div>
+
+        <button onClick={handleSubmit} disabled={isSubmitting} className="submit-button">
+          {isSubmitting ? "Gönderiliyor..." : "Şikayeti Gönder"}
+        </button>
+
+        {submitStatus && (
+          <p className={statusType === "success" ? "status-success" : "status-error"}>
+            {submitStatus}
+          </p>
+        )}
+      </div>
     </div>
   );
 }

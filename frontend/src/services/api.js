@@ -41,3 +41,16 @@ export async function getComplaints(token) {
   if (!response.ok) throw new Error("Şikayetler alınamadı");
   return response.json();
 }
+
+export async function updateComplaintStatus(complaintId, newStatus, token) {
+  const response = await fetch(`${API_BASE}/complaints/${complaintId}/status`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ status: newStatus }),
+  });
+  if (!response.ok) throw new Error("Durum güncellenemedi");
+  return response.json();
+}

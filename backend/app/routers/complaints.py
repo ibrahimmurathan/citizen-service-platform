@@ -7,7 +7,7 @@ from .. import models
 from ..database import get_db
 from ..services.prediction_service import get_prediction
 from ..models import ComplaintStatus
-from ..services.auth_service import get_current_user
+from ..services.auth_service import get_current_user, get_current_admin
 
 def save_upload_file(contents, filename):
     unique_filename = f"{uuid.uuid4()}.{filename.split('.')[-1]}"
@@ -52,14 +52,16 @@ async def create_complaint(
     db.refresh(new_complaint)
 
     return new_complaint
-@router.get("", response_model=list[schemas.ComplaintResponse])
 
-def list_complaints(db: Session = Depends(get_db),
-                    category: models.ComplaintCategory = None,
-                    status: models.ComplaintStatus = None):
-    query = db.query(models.Complaint)
-    if category:
-        query = query.filter(models.Complaint.predicted_category == category)
+@router.get("", response_model=list[schemas.ComplaintResponse])
+def list_complaints(
+    status: models.ComplaintStatus = None,
+    db: Session = Depends(get_db),
+    current_admin: models.Admin = Depends(get_current_admin),
+):
+    query = db.query(models.Complaint).filter(
+        models.Complaint.predicted_category == current_admin.admin_category
+    )
     if status:
         query = query.filter(models.Complaint.status == status)
     return query.all()
@@ -72,15 +74,20 @@ def get_complaint(complaint_id: int, db: Session = Depends(get_db)):
     return complaint
 
 @router.patch("/{complaint_id}/status", response_model=schemas.ComplaintResponse)
-
-def ComplaintStatusUpdate(complaint_id: int, status_update: schemas.ComplaintStatusUpdate, db: Session = Depends(get_db)):
+def update_complaint_status(
+    complaint_id: int,
+    status_update: schemas.ComplaintStatusUpdate,
+    db: Session = Depends(get_db),
+    current_admin: models.Admin = Depends(get_current_admin),
+):
     complaint = db.query(models.Complaint).filter(models.Complaint.id == complaint_id).first()
     if not complaint:
         raise HTTPException(status_code=404, detail="Şikayet bulunamadı")
-    
+
+    if complaint.predicted_category != current_admin.admin_category:
+        raise HTTPException(status_code=403, detail="Bu şikayet üzerinde yetkiniz yok")
+
     complaint.status = status_update.status
     db.commit()
     db.refresh(complaint)
-    
     return complaint
-

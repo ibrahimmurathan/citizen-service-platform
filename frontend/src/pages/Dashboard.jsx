@@ -1,8 +1,9 @@
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import "./Dashboard.css";
 
 function Dashboard() {
-  const { token, role, fullName, logout } = useAuth();
+  const { token, role, fullName } = useAuth();
   const navigate = useNavigate();
 
   const handleComplaintClick = () => {
@@ -18,15 +19,51 @@ function Dashboard() {
   };
 
   return (
-    <div>
-      <header>
-        {token && role === "user" && <span>Hoş geldiniz, {fullName}</span>}
-      </header>
+    <div className="dashboard">
+      <section className="dashboard-hero">
+        <h1>{fullName ? `Hoş Geldiniz, ${fullName}` : "Hoş Geldiniz"}</h1>
 
-      <h1>Belediye Beyaz Masa</h1>
-      <p>Şehrimizle ilgili sorunlarınızı bize bildirin.</p>
+        <div className="hero-cards">
+          <button className="hero-card" onClick={handleComplaintClick}>
+            <div className="hero-card-icon">📋</div>
+            <div className="hero-card-text">
+              <strong>Talep / Şikâyet Oluştur</strong>
+              <span>Form ile başvuru oluşturun</span>
+            </div>
+            <span className="hero-card-arrow">›</span>
+          </button>
 
-      <button onClick={handleComplaintClick}>Şikayet Oluştur</button>
+          <div className="hero-card hero-card-disabled">
+            <div className="hero-card-icon">🕘</div>
+            <div className="hero-card-text">
+              <strong>Geçmiş Başvurularım</strong>
+              <span>Yakında kullanıma açılacak</span>
+            </div>
+            <span className="hero-card-arrow">›</span>
+          </div>
+        </div>
+      </section>
+
+      <section className="dashboard-info">
+        <h2>Nasıl Çalışır?</h2>
+        <div className="info-cards">
+          <div className="info-card">
+            <div className="info-card-icon">📷</div>
+            <strong>1. Fotoğraf Çekin</strong>
+            <p>Karşılaştığınız sorunu fotoğraflayın</p>
+          </div>
+          <div className="info-card">
+            <div className="info-card-icon">📍</div>
+            <strong>2. Konum Seçin</strong>
+            <p>Sorunun yerini haritadan işaretleyin</p>
+          </div>
+          <div className="info-card">
+            <div className="info-card-icon">✅</div>
+            <strong>3. Gönderin</strong>
+            <p>Şikayetiniz ilgili birime otomatik yönlendirilir</p>
+          </div>
+        </div>
+      </section>
     </div>
   );
 }

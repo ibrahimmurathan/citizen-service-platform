@@ -1,0 +1,125 @@
+.dashboard {
+    font-family: system-ui, sans-serif;
+}
+
+.dashboard-hero {
+    background-color: #1e2a4a;
+    padding: 48px 32px 56px;
+    text-align: center;
+}
+
+.dashboard-hero h1 {
+    color: white;
+    font-size: 28px;
+    margin-bottom: 28px;
+}
+
+.hero-cards {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.hero-card {
+    background-color: #2d3b5e;
+    border: none;
+    border-radius: 10px;
+    padding: 20px 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    min-width: 260px;
+    max-width: 400px;
+    cursor: pointer;
+    text-align: left;
+}
+
+.hero-card-disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.hero-card-icon {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+}
+
+.hero-card-text {
+    display: flex;
+    flex-direction: column;
+    color: white;
+    flex-grow: 1;
+}
+
+.hero-card-text strong {
+    font-size: 15px;
+    margin-bottom: 4px;
+}
+
+.hero-card-text span {
+    font-size: 13px;
+    color: #b8c0d4;
+}
+
+.hero-card-arrow {
+    color: white;
+    font-size: 20px;
+}
+
+.dashboard-info {
+    padding: 48px 32px;
+    text-align: center;
+    background-color: #f4f6f9;
+}
+
+.dashboard-info h2 {
+    color: #1e2a4a;
+    margin-bottom: 32px;
+}
+
+.info-cards {
+    display: flex;
+    gap: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.info-card {
+    background: white;
+    border: 1px solid #e2e5eb;
+    border-radius: 10px;
+    padding: 24px;
+    flex: 1;
+    min-width: 220px;
+    max-width: 260px;
+}
+
+.info-card-icon {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.info-card strong {
+    display: block;
+    color: #1e2a4a;
+    margin-bottom: 6px;
+}
+
+.info-card p {
+    color: #666;
+    font-size: 14px;
+    margin: 0;
+}
