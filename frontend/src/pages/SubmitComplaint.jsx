@@ -39,7 +39,7 @@ function SubmitComplaint() {
 
     try {
       const result = await submitComplaint(data, token);
-      setSubmitStatus("Şikayetiniz başarıyla gönderildi! Takip numaranız: " + result.id);
+      setSubmitStatus("Şikayetiniz başarıyla gönderildi! Takip numaranız: " + result.tracking_code);
       setStatusType("success");
 
       setFile(null);

@@ -8,6 +8,7 @@ from ..database import get_db
 from ..services.prediction_service import get_prediction
 from ..models import ComplaintStatus
 from ..services.auth_service import get_current_user, get_current_admin
+from ..services.tracking_service import generate_tracking_code
 
 def save_upload_file(contents, filename):
     unique_filename = f"{uuid.uuid4()}.{filename.split('.')[-1]}"
@@ -37,13 +38,16 @@ async def create_complaint(
 
     image_path = save_upload_file(contents, file.filename)
 
+    new_tracking_code = generate_tracking_code()
     new_complaint = models.Complaint(
         image_path=image_path,
         user_id=current_user.id,
+        tracking_code=new_tracking_code,
         description=description,
         latitude=latitude,
         longitude=longitude,
         predicted_category=predicted_category,
+        category=predicted_category,
         confidence_score=confidence_score,
     )
 
@@ -59,12 +63,29 @@ def list_complaints(
     db: Session = Depends(get_db),
     current_admin: models.Admin = Depends(get_current_admin),
 ):
+    pending_transfer_ids = db.query(models.ComplaintTransfer.complaint_id).filter(
+        models.ComplaintTransfer.status == models.TransferStatus.BEKLEMEDE
+    ).subquery()
+
     query = db.query(models.Complaint).filter(
-        models.Complaint.predicted_category == current_admin.admin_category
+        models.Complaint.category == current_admin.admin_category,
+        ~models.Complaint.id.in_(pending_transfer_ids),
     )
     if status:
         query = query.filter(models.Complaint.status == status)
     return query.all()
+
+@router.get("/my", response_model=list[schemas.ComplaintResponse])
+def get_my_complaints(
+    db: Session = Depends(get_db),
+    current_user: models.User = Depends(get_current_user),
+):
+    return (
+        db.query(models.Complaint)
+        .filter(models.Complaint.user_id == current_user.id)
+        .order_by(models.Complaint.created_at.desc())
+        .all()
+    )
 
 @router.get("/{complaint_id}", response_model=schemas.ComplaintResponse)
 def get_complaint(complaint_id: int, db: Session = Depends(get_db)):
@@ -84,7 +105,7 @@ def update_complaint_status(
     if not complaint:
         raise HTTPException(status_code=404, detail="Şikayet bulunamadı")
 
-    if complaint.predicted_category != current_admin.admin_category:
+    if complaint.category != current_admin.admin_category:
         raise HTTPException(status_code=403, detail="Bu şikayet üzerinde yetkiniz yok")
 
     complaint.status = status_update.status

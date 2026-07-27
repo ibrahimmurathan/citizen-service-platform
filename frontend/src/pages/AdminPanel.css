@@ -1,3 +1,7 @@
+* {
+  box-sizing: border-box;
+}
+
 .admin-panel {
   max-width: 1100px;
   margin: 0 auto;
@@ -10,6 +14,67 @@
   justify-content: space-between;
   align-items: center;
   margin-bottom: 24px;
+}
+
+.error-text {
+  color: #991b1b;
+}
+
+.incoming-transfers {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 10px;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+
+.incoming-transfers h2 {
+  font-size: 16px;
+  color: #1e2a4a;
+  margin: 0 0 12px 0;
+}
+
+.transfer-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.transfer-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: white;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.transfer-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.transfer-approve {
+  background-color: #16a34a;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.transfer-reject {
+  background-color: #dc2626;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
 }
 
 .admin-map-wrapper {
@@ -101,10 +166,6 @@
   background-color: #fee2e2;
 }
 
-.error-text {
-  color: #991b1b;
-}
-
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -116,13 +177,14 @@
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  padding: 16px;
 }
 
 .modal-card {
   background: white;
   border-radius: 12px;
   max-width: 420px;
-  width: 90%;
+  width: 100%;
   position: relative;
   overflow: hidden;
   max-height: 90vh;
@@ -164,4 +226,72 @@
 
 .modal-info {
   padding: 16px;
+}
+
+.modal-info p {
+  margin: 0 0 8px 0;
+  font-size: 14px;
+}
+
+.status-select {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 14px;
+  margin-top: 4px;
+}
+
+.transfer-section {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #eee;
+}
+
+.section-label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: #444;
+  margin-bottom: 6px;
+}
+
+.transfer-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.transfer-form select {
+  flex: 1;
+  min-width: 0;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.transfer-form button {
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.transfer-form button:disabled {
+  background-color: #93c5fd;
+  cursor: not-allowed;
+}
+
+.transfer-pending-badge {
+  background-color: #fef9c3;
+  color: #854d0e;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
 }

@@ -19,19 +19,36 @@ class ComplaintStatus(str, enum.Enum):
     REDDEDILDI = "reddedildi"
     COZULDU = "cozuldu"
 
+class TransferStatus(str, enum.Enum):
+    BEKLEMEDE = "beklemede"
+    ONAYLANDI = "onaylandi"
+    REDDEDILDI = "reddedildi"
+
 
 class Complaint(Base):
     __tablename__ = "complaints"
     id = Column(Integer, primary_key=True, index=True)
+    tracking_code = Column(String, unique=True, index=True)
     image_path = Column(String)
     user_id = Column(Integer, ForeignKey("users.id"))
     user = relationship("User")
     description = Column(Text, nullable=True)
     predicted_category = Column(Enum(ComplaintCategory))
+    category = Column(Enum(ComplaintCategory))
     confidence_score = Column(Float)
     latitude = Column(Float)
     longitude = Column(Float)
     status = Column(Enum(ComplaintStatus), default=ComplaintStatus.BEKLEMEDE)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+
+class ComplaintTransfer(Base):
+    __tablename__ = "complaint_transfers"
+    id = Column(Integer, primary_key=True, index=True)
+    complaint_id = Column(Integer, ForeignKey("complaints.id"))
+    from_category = Column(Enum(ComplaintCategory))
+    to_category = Column(Enum(ComplaintCategory))
+    status = Column(Enum(TransferStatus), default=TransferStatus.BEKLEMEDE)
     created_at = Column(DateTime, default=datetime.utcnow)
 
 

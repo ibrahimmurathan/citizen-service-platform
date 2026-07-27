@@ -1,7 +1,14 @@
 import { useState, useEffect } from "react";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import { useAuth } from "../context/AuthContext";
-import { getComplaints, updateComplaintStatus } from "../services/api";
+import {
+  getComplaints,
+  updateComplaintStatus,
+  createTransfer,
+  getIncomingTransfers,
+  getOutgoingTransfers,
+  respondToTransfer,
+} from "../services/api";
 import "leaflet/dist/leaflet.css";
 import "./AdminPanel.css";
 
@@ -12,12 +19,23 @@ const STATUS_LABELS = {
   reddedildi: "Reddedildi",
 };
 
+const CATEGORY_LABELS = {
+  yol_altyapi: "Yol ve Altyapı",
+  cevre_atik: "Çevre ve Katı Atık",
+  kent_estetik: "Kent Estetiği",
+  ulasim_trafik: "Ulaşım ve Trafik",
+  yapi_imar: "Yapı ve İmar",
+};
+
 function AdminPanel() {
-  const { token, fullName } = useAuth();
+  const { token, fullName, role } = useAuth();
   const [complaints, setComplaints] = useState([]);
+  const [incomingTransfers, setIncomingTransfers] = useState([]);
+  const [outgoingTransfers, setOutgoingTransfers] = useState([]);
   const [error, setError] = useState(null);
   const [selectedComplaint, setSelectedComplaint] = useState(null);
   const [imageDimensions, setImageDimensions] = useState(null);
+  const [transferTarget, setTransferTarget] = useState("");
 
   const loadComplaints = async () => {
     try {
@@ -28,8 +46,28 @@ function AdminPanel() {
     }
   };
 
+  const loadIncomingTransfers = async () => {
+    try {
+      const data = await getIncomingTransfers(token);
+      setIncomingTransfers(data);
+    } catch (err) {
+      setError("Transfer talepleri yüklenemedi.");
+    }
+  };
+
+  const loadOutgoingTransfers = async () => {
+    try {
+      const data = await getOutgoingTransfers(token);
+      setOutgoingTransfers(data);
+    } catch (err) {
+      setError("Gönderilen talepler yüklenemedi.");
+    }
+  };
+
   useEffect(() => {
     loadComplaints();
+    loadIncomingTransfers();
+    loadOutgoingTransfers();
   }, [token]);
 
   const handleStatusChange = async (complaintId, newStatus) => {
@@ -44,6 +82,30 @@ function AdminPanel() {
     }
   };
 
+  const handleTransferSubmit = async () => {
+    if (!transferTarget) return;
+    try {
+      await createTransfer(selectedComplaint.id, transferTarget, token);
+      setTransferTarget("");
+      handleCloseModal();
+      loadComplaints();
+      loadOutgoingTransfers();
+    } catch (err) {
+      setError("Transfer talebi gönderilemedi.");
+    }
+  };
+
+  const handleTransferResponse = async (transferId, approve) => {
+    try {
+      await respondToTransfer(transferId, approve, token);
+      loadIncomingTransfers();
+      loadOutgoingTransfers();
+      loadComplaints();
+    } catch (err) {
+      setError("Talep işlenemedi.");
+    }
+  };
+
   const handleImageLoad = (event) => {
     setImageDimensions({
       width: event.target.naturalWidth,
@@ -54,6 +116,7 @@ function AdminPanel() {
   const handleCloseModal = () => {
     setSelectedComplaint(null);
     setImageDimensions(null);
+    setTransferTarget("");
   };
 
   const mapCenter =
@@ -70,6 +133,46 @@ function AdminPanel() {
 
       {error && <p className="error-text">{error}</p>}
 
+      {(incomingTransfers.length > 0 || outgoingTransfers.length > 0) && (
+        <section className="incoming-transfers">
+          <h2>Transfer İşlemleri</h2>
+          <div className="transfer-list">
+            {incomingTransfers.map((transfer) => (
+              <div key={`in-${transfer.id}`} className="transfer-item">
+                <span>
+                  <strong>Gelen Talep</strong> — Şikayet #{transfer.complaint_id},{" "}
+                  {CATEGORY_LABELS[transfer.from_category]} biriminden
+                </span>
+                <div className="transfer-actions">
+                  <button
+                    className="transfer-approve"
+                    onClick={() => handleTransferResponse(transfer.id, true)}
+                  >
+                    Onayla
+                  </button>
+                  <button
+                    className="transfer-reject"
+                    onClick={() => handleTransferResponse(transfer.id, false)}
+                  >
+                    Reddet
+                  </button>
+                </div>
+              </div>
+            ))}
+
+            {outgoingTransfers.map((transfer) => (
+              <div key={`out-${transfer.id}`} className="transfer-item">
+                <span>
+                  <strong>Gönderilen Talep</strong> — Şikayet #{transfer.complaint_id},{" "}
+                  {CATEGORY_LABELS[transfer.to_category]} birimine
+                </span>
+                <span className="transfer-pending-badge">Beklemede</span>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
+
       <div className="admin-map-wrapper">
         <MapContainer center={mapCenter} zoom={12} style={{ height: "400px", width: "100%" }}>
           <TileLayer
@@ -80,9 +183,7 @@ function AdminPanel() {
             <Marker
               key={complaint.id}
               position={[complaint.latitude, complaint.longitude]}
-              eventHandlers={{
-                click: () => setSelectedComplaint(complaint),
-              }}
+              eventHandlers={{ click: () => setSelectedComplaint(complaint) }}
             />
           ))}
         </MapContainer>
@@ -138,17 +239,36 @@ function AdminPanel() {
               <p><strong>{selectedComplaint.user.user_full_name}</strong> — {selectedComplaint.user.user_phone_number}</p>
               <p>{selectedComplaint.description || "Açıklama girilmemiş"}</p>
               <p>Güven skoru: %{Math.round(selectedComplaint.confidence_score * 100)}</p>
+
               <select
                 value={selectedComplaint.status}
                 onChange={(e) => handleStatusChange(selectedComplaint.id, e.target.value)}
                 className={`status-select status-${selectedComplaint.status}`}
               >
                 {Object.entries(STATUS_LABELS).map(([value, label]) => (
-                  <option key={value} value={value}>
-                    {label}
-                  </option>
+                  <option key={value} value={value}>{label}</option>
                 ))}
               </select>
+
+              <div className="transfer-section">
+                <label className="section-label">Yanlış kategoriye mi düştü?</label>
+                <div className="transfer-form">
+                  <select
+                    value={transferTarget}
+                    onChange={(e) => setTransferTarget(e.target.value)}
+                  >
+                    <option value="">Kategori seçin...</option>
+                    {Object.entries(CATEGORY_LABELS)
+                      .filter(([value]) => value !== selectedComplaint.category)
+                      .map(([value, label]) => (
+                        <option key={value} value={value}>{label}</option>
+                      ))}
+                  </select>
+                  <button onClick={handleTransferSubmit} disabled={!transferTarget}>
+                    Transfer Et
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>

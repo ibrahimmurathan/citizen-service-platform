@@ -54,3 +54,55 @@ export async function updateComplaintStatus(complaintId, newStatus, token) {
   if (!response.ok) throw new Error("Durum güncellenemedi");
   return response.json();
 }
+
+export async function getMyComplaints(token) {
+  const response = await fetch(`${API_BASE}/complaints/my`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  if (!response.ok) throw new Error("Şikayetleriniz alınamadı");
+  return response.json();
+}
+
+export async function createTransfer(complaintId, toCategory, token) {
+  const response = await fetch(`${API_BASE}/transfers/${complaintId}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ to_category: toCategory }),
+  });
+  if (!response.ok) throw new Error("Transfer talebi gönderilemedi");
+  return response.json();
+}
+
+export async function getIncomingTransfers(token) {
+  const response = await fetch(`${API_BASE}/transfers/incoming`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!response.ok) throw new Error("Transfer talepleri alınamadı");
+  return response.json();
+}
+
+export async function respondToTransfer(transferId, approve, token) {
+  const response = await fetch(`${API_BASE}/transfers/${transferId}/respond`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ approve }),
+  });
+  if (!response.ok) throw new Error("Talep işlenemedi");
+  return response.json();
+}
+
+export async function getOutgoingTransfers(token) {
+  const response = await fetch(`${API_BASE}/transfers/outgoing`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  if (!response.ok) throw new Error("Gönderilen talepler alınamadı");
+  return response.json();
+}

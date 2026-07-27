@@ -7,15 +7,17 @@ import Login from './pages/Login'
 import AdminPanel from "./pages/Adminpanel";
 import { useAuth } from './context/AuthContext'
 import ProtectedRoute from "./components/ProtectedRoute";
+import MyComplaints from './pages/MyComplaints'
 
 function App() {
-  const { token, logout } = useAuth();
+  const { token, role, logout } = useAuth();
 
   return (
     <div className="App">
       <nav className="navbar">
-        <Link to="/" className="navbar-brand">Belediye Şikayet Sistemi</Link>
+        <Link to="/" className="navbar-brand">Belediye Akıllı Çözüm Sistemi</Link>
         <div className="navbar-links">
+          <Link to={role === "admin" ? "/admin" : "/"}>Anasayfa</Link>
           {token ? (
             <button onClick={logout}>Çıkış Yap</button>
           ) : (
@@ -41,6 +43,12 @@ function App() {
           element={
             <ProtectedRoute requiredRole="admin">
               <AdminPanel />
+            </ProtectedRoute>
+          } />
+        <Route path="/gecmis-basvurularim"
+          element={
+            <ProtectedRoute requiredRole="user">
+              <MyComplaints />
             </ProtectedRoute>
           } />
       </Routes>

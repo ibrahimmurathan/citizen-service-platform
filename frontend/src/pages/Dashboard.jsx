@@ -18,6 +18,18 @@ function Dashboard() {
     navigate("/sikayet-olustur");
   };
 
+  const handleMyComplaintsClick = () => {
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+    if (role === "admin") {
+      alert("Bu özellik sadece vatandaşlar içindir.");
+      return;
+    }
+    navigate("/gecmis-basvurularim");
+  };
+
   return (
     <div className="dashboard">
       <section className="dashboard-hero">
@@ -33,14 +45,14 @@ function Dashboard() {
             <span className="hero-card-arrow">›</span>
           </button>
 
-          <div className="hero-card hero-card-disabled">
+          <button className="hero-card" onClick={handleMyComplaintsClick}>
             <div className="hero-card-icon">🕘</div>
             <div className="hero-card-text">
               <strong>Geçmiş Başvurularım</strong>
-              <span>Yakında kullanıma açılacak</span>
+              <span>Başvurularınızı takip edin</span>
             </div>
             <span className="hero-card-arrow">›</span>
-          </div>
+          </button>
         </div>
       </section>
 

@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing  import Optional
 from pydantic import BaseModel
-from .models import ComplaintCategory, ComplaintStatus
+from .models import ComplaintCategory, ComplaintStatus, TransferStatus
 
 class UserInfo(BaseModel):
     id: int
@@ -14,6 +14,7 @@ class UserInfo(BaseModel):
    
 class ComplaintResponse(BaseModel):
     id: int
+    tracking_code: str
     image_path: str
     user: UserInfo
     description: Optional[str] = None
@@ -45,3 +46,22 @@ class Token(BaseModel):
     token_type: str = "bearer"
     role: str
     full_name : str
+
+class TransferRequest(BaseModel):
+    to_category: ComplaintCategory
+
+
+class TransferResponse(BaseModel):
+    id: int
+    complaint_id: int
+    from_category: ComplaintCategory
+    to_category: ComplaintCategory
+    status: TransferStatus
+    created_at: datetime
+
+    class Config:
+        from_attributes = True
+
+
+class TransferRespondRequest(BaseModel):
+    approve: bool
