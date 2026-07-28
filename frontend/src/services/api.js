@@ -32,11 +32,12 @@ export async function submitComplaint(formDataObj, token) {
   return response.json();
 }
 
-export async function getComplaints(token) {
-  const response = await fetch(`${API_BASE}/complaints`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
+export async function getComplaints(token, status = null) {
+  const url = status
+    ? `${API_BASE}/complaints?status=${status}`
+    : `${API_BASE}/complaints`;
+  const response = await fetch(url, {
+    headers: { Authorization: `Bearer ${token}` },
   });
   if (!response.ok) throw new Error("Şikayetler alınamadı");
   return response.json();

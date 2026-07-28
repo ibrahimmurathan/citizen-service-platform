@@ -17,6 +17,7 @@ const STATUS_LABELS = {
   inceleniyor: "İnceleniyor",
   cozuldu: "Çözüldü",
   reddedildi: "Reddedildi",
+  silindi: "Silindi",
 };
 
 const CATEGORY_LABELS = {
@@ -30,6 +31,7 @@ const CATEGORY_LABELS = {
 function AdminPanel() {
   const { token, fullName, role } = useAuth();
   const [complaints, setComplaints] = useState([]);
+  const [deletedComplaints, setDeletedComplaints] = useState([]);
   const [incomingTransfers, setIncomingTransfers] = useState([]);
   const [outgoingTransfers, setOutgoingTransfers] = useState([]);
   const [error, setError] = useState(null);
@@ -43,6 +45,15 @@ function AdminPanel() {
       setComplaints(data);
     } catch (err) {
       setError("Şikayetler yüklenemedi.");
+    }
+  };
+
+  const loadDeletedComplaints = async () => {
+    try {
+      const data = await getComplaints(token, "silindi");
+      setDeletedComplaints(data);
+    } catch (err) {
+      setError("Silinen şikayetler yüklenemedi.");
     }
   };
 
@@ -66,6 +77,7 @@ function AdminPanel() {
 
   useEffect(() => {
     loadComplaints();
+    loadDeletedComplaints();
     loadIncomingTransfers();
     loadOutgoingTransfers();
   }, [token]);
@@ -74,6 +86,7 @@ function AdminPanel() {
     try {
       await updateComplaintStatus(complaintId, newStatus, token);
       loadComplaints();
+      loadDeletedComplaints();
       setSelectedComplaint((prev) =>
         prev && prev.id === complaintId ? { ...prev, status: newStatus } : prev
       );
@@ -106,6 +119,28 @@ function AdminPanel() {
     }
   };
 
+  const handleDelete = async (complaintId) => {
+    if (!window.confirm("Bu şikayeti silmek istediğinize emin misiniz?")) return;
+    try {
+      await updateComplaintStatus(complaintId, "silindi", token);
+      handleCloseModal();
+      loadComplaints();
+      loadDeletedComplaints();
+    } catch (err) {
+      setError("Şikayet silinemedi.");
+    }
+  };
+
+  const handleRestore = async (complaintId, newStatus) => {
+    try {
+      await updateComplaintStatus(complaintId, newStatus, token);
+      loadComplaints();
+      loadDeletedComplaints();
+    } catch (err) {
+      setError("Şikayet geri yüklenemedi.");
+    }
+  };
+
   const handleImageLoad = (event) => {
     setImageDimensions({
       width: event.target.naturalWidth,
@@ -119,9 +154,16 @@ function AdminPanel() {
     setTransferTarget("");
   };
 
+  const activeComplaints = complaints.filter(
+    (c) => c.status === "beklemede" || c.status === "inceleniyor"
+  );
+  const pastComplaints = complaints.filter(
+    (c) => c.status === "cozuldu" || c.status === "reddedildi"
+  );
+
   const mapCenter =
-    complaints.length > 0
-      ? [complaints[0].latitude, complaints[0].longitude]
+    activeComplaints.length > 0
+      ? [activeComplaints[0].latitude, activeComplaints[0].longitude]
       : [36.983, 35.317];
 
   return (
@@ -179,7 +221,7 @@ function AdminPanel() {
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             attribution="&copy; OpenStreetMap katkıda bulunanlar"
           />
-          {complaints.map((complaint) => (
+          {activeComplaints.map((complaint) => (
             <Marker
               key={complaint.id}
               position={[complaint.latitude, complaint.longitude]}
@@ -189,8 +231,9 @@ function AdminPanel() {
         </MapContainer>
       </div>
 
+      <h2 className="section-title">Aktif Şikayetler</h2>
       <div className="complaint-grid">
-        {complaints.map((complaint) => (
+        {activeComplaints.map((complaint) => (
           <div
             key={complaint.id}
             className="complaint-card"
@@ -216,6 +259,55 @@ function AdminPanel() {
             </div>
           </div>
         ))}
+        {activeComplaints.length === 0 && <p className="empty-text">Aktif şikayet bulunmuyor.</p>}
+      </div>
+
+      <h2 className="section-title">Geçmiş Şikayetler</h2>
+      <div className="complaint-row-list">
+        {pastComplaints.map((complaint) => (
+          <div
+            key={complaint.id}
+            className="complaint-row"
+            onClick={() => setSelectedComplaint(complaint)}
+          >
+            <img
+              src={`http://localhost:8000/${complaint.image_path}`}
+              alt="Şikayet fotoğrafı"
+              className="row-thumbnail"
+            />
+            <span className="row-name">{complaint.user.user_full_name}</span>
+            <span className="row-description">{complaint.description || "—"}</span>
+            <span className={`status-badge status-${complaint.status}`}>
+              {STATUS_LABELS[complaint.status]}
+            </span>
+          </div>
+        ))}
+        {pastComplaints.length === 0 && <p className="empty-text">Geçmiş şikayet bulunmuyor.</p>}
+      </div>
+
+      <h2 className="section-title">Silinen Şikayetler</h2>
+      <div className="complaint-row-list">
+        {deletedComplaints.map((complaint) => (
+          <div key={complaint.id} className="complaint-row">
+            <img
+              src={`http://localhost:8000/${complaint.image_path}`}
+              alt="Şikayet fotoğrafı"
+              className="row-thumbnail"
+            />
+            <span className="row-name">{complaint.user.user_full_name}</span>
+            <span className="row-description">{complaint.description || "—"}</span>
+            <select
+              value={complaint.status}
+              onChange={(e) => handleRestore(complaint.id, e.target.value)}
+              className="row-restore-select"
+            >
+              <option value="silindi">Silindi</option>
+              <option value="beklemede">Beklemede olarak geri yükle</option>
+              <option value="inceleniyor">İnceleniyor olarak geri yükle</option>
+            </select>
+          </div>
+        ))}
+        {deletedComplaints.length === 0 && <p className="empty-text">Silinen şikayet bulunmuyor.</p>}
       </div>
 
       {selectedComplaint && (
@@ -269,6 +361,10 @@ function AdminPanel() {
                   </button>
                 </div>
               </div>
+
+              <button className="delete-button" onClick={() => handleDelete(selectedComplaint.id)}>
+                🗑 Şikayeti Sil
+              </button>
             </div>
           </div>
         </div>

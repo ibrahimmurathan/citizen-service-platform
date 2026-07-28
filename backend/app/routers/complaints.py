@@ -71,8 +71,12 @@ def list_complaints(
         models.Complaint.category == current_admin.admin_category,
         ~models.Complaint.id.in_(pending_transfer_ids),
     )
+
     if status:
         query = query.filter(models.Complaint.status == status)
+    else:
+        query = query.filter(models.Complaint.status != models.ComplaintStatus.SILINDI)
+
     return query.all()
 
 @router.get("/my", response_model=list[schemas.ComplaintResponse])

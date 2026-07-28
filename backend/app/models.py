@@ -18,6 +18,7 @@ class ComplaintStatus(str, enum.Enum):
     INCELENIYOR = "inceleniyor"
     REDDEDILDI = "reddedildi"
     COZULDU = "cozuldu"
+    SILINDI = "silindi"
 
 class TransferStatus(str, enum.Enum):
     BEKLEMEDE = "beklemede"
