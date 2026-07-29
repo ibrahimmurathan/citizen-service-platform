@@ -107,3 +107,9 @@ export async function getOutgoingTransfers(token) {
   if (!response.ok) throw new Error("Gönderilen talepler alınamadı");
   return response.json();
 }
+
+export async function trackComplaint(trackingCode) {
+  const response = await fetch(`${API_BASE}/complaints/track/${trackingCode}`);
+  if (!response.ok) throw new Error("Şikayet bulunamadı");
+  return response.json();
+}

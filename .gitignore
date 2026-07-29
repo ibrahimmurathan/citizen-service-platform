@@ -1,19 +1,20 @@
 # Python
 __pycache__/
 *.pyc
+*.pyo
 venv/
 *.egg-info/
-
-# Ortam değişkenleri
 .env
+**/.env
 
 # Veritabanı dosyası
 *.db
+*.db-shm
+*.db-wal
 
 dataset/
-backend/data
-backend/uploads
-
+backend/data/
+backend/uploads/
 
 # IDE/Editör dosyaları
 .vscode/
@@ -25,6 +26,9 @@ Thumbs.db
 
 # Frontend
 node_modules/
+dist/
+frontend/.env
+frontend/.env.local
 
 # Model dosyası
-ml_model/
+ml_model/

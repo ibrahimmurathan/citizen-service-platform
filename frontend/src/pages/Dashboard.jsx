@@ -30,6 +30,10 @@ function Dashboard() {
     navigate("/gecmis-basvurularim");
   };
 
+  const handleQueryClick = () => {
+    navigate("/sorgula");
+  };
+
   return (
     <div className="dashboard">
       <section className="dashboard-hero">
@@ -50,6 +54,15 @@ function Dashboard() {
             <div className="hero-card-text">
               <strong>Geçmiş Başvurularım</strong>
               <span>Başvurularınızı takip edin</span>
+            </div>
+            <span className="hero-card-arrow">›</span>
+          </button>
+
+          <button className="hero-card" onClick={handleQueryClick}>
+            <div className="hero-card-icon">🔍</div>
+            <div className="hero-card-text">
+              <strong>Şikayetimi Sorgula</strong>
+              <span>Takip numaranızla şikayetinizi sorgulayın</span>
             </div>
             <span className="hero-card-arrow">›</span>
           </button>

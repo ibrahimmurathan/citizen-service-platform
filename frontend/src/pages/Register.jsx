@@ -9,6 +9,7 @@ function Register() {
     user_full_name: "",
     user_email: "",
     user_phone_number: "",
+    tc_kimlik_no: "",
     password: "",
   });
   const [error, setError] = useState(null);
@@ -20,15 +21,23 @@ function Register() {
     setFormData({ ...formData, [name]: value });
   };
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError(null);
+
+    if (!/^\d{11}$/.test(formData.tc_kimlik_no)) {
+      setError("TC Kimlik No 11 haneli ve yalnızca rakamlardan oluşmalıdır.");
+      return;
+    }
+
     try {
       const result = await registerUser(formData);
       login(result.access_token, result.role, result.full_name);
       navigate("/");
     } catch (err) {
-      setError("Kayıt sırasında bir hata oluştu.");
+      setError(err?.response?.data?.detail || "Kayıt sırasında bir hata oluştu.");
     }
   };
 
@@ -45,6 +54,18 @@ function Register() {
             name="user_full_name"
             placeholder="Ad Soyad"
             value={formData.user_full_name}
+            onChange={handleChange}
+          />
+        </div>
+
+        <div className="auth-section">
+          <label className="section-label">TC Kimlik No</label>
+          <input
+            className="auth-input"
+            name="tc_kimlik_no"
+            placeholder="11 haneli TC Kimlik No"
+            maxLength={11}
+            value={formData.tc_kimlik_no}
             onChange={handleChange}
           />
         </div>
@@ -74,14 +95,23 @@ function Register() {
 
         <div className="auth-section">
           <label className="section-label">Şifre</label>
-          <input
-            className="auth-input"
-            name="password"
-            type="password"
-            placeholder="Şifreniz"
-            value={formData.password}
-            onChange={handleChange}
-          />
+          <div className="password-wrapper">
+            <input
+              className="auth-input"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Şifreniz"
+              value={formData.password}
+              onChange={handleChange}
+            />
+            <button
+              className="password-toggle"
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+            >
+              {showPassword ? "🔓" : "🔒"}
+            </button>
+          </div>
         </div>
 
         <button type="submit" className="auth-button">Kayıt Ol</button>

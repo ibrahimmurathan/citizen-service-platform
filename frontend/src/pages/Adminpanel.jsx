@@ -161,6 +161,14 @@ function AdminPanel() {
     (c) => c.status === "cozuldu" || c.status === "reddedildi"
   );
 
+  const stats = {
+    total: complaints.length + deletedComplaints.length,
+    beklemede: complaints.filter((c) => c.status === "beklemede").length,
+    inceleniyor: complaints.filter((c) => c.status === "inceleniyor").length,
+    cozuldu: complaints.filter((c) => c.status === "cozuldu").length,
+    reddedildi: complaints.filter((c) => c.status === "reddedildi").length,
+  };
+
   const mapCenter =
     activeComplaints.length > 0
       ? [activeComplaints[0].latitude, activeComplaints[0].longitude]
@@ -174,6 +182,28 @@ function AdminPanel() {
       </header>
 
       {error && <p className="error-text">{error}</p>}
+      <div className="stats-grid">
+        <div className="stat-card">
+          <span className="stat-value">{stats.total}</span>
+          <span className="stat-label">Toplam Şikayet</span>
+        </div>
+        <div className="stat-card stat-beklemede">
+          <span className="stat-value">{stats.beklemede}</span>
+          <span className="stat-label">Beklemede</span>
+        </div>
+        <div className="stat-card stat-inceleniyor">
+          <span className="stat-value">{stats.inceleniyor}</span>
+          <span className="stat-label">İnceleniyor</span>
+        </div>
+        <div className="stat-card stat-cozuldu">
+          <span className="stat-value">{stats.cozuldu}</span>
+          <span className="stat-label">Çözüldü</span>
+        </div>
+        <div className="stat-card stat-reddedildi">
+          <span className="stat-value">{stats.reddedildi}</span>
+          <span className="stat-label">Reddedildi</span>
+        </div>
+      </div>
 
       {(incomingTransfers.length > 0 || outgoingTransfers.length > 0) && (
         <section className="incoming-transfers">
@@ -328,8 +358,10 @@ function AdminPanel() {
               </span>
             )}
             <div className="modal-info">
-              <p><strong>{selectedComplaint.user.user_full_name}</strong> — {selectedComplaint.user.user_phone_number}</p>
-              <p>{selectedComplaint.description || "Açıklama girilmemiş"}</p>
+              <p><strong>Ad Soyad:</strong> {selectedComplaint.user.user_full_name}</p>
+              <p><strong>Telefon Numarası: </strong>{selectedComplaint.user.user_phone_number}</p>
+              <p><strong>TC Kimlik No: </strong>{selectedComplaint.user.tc_kimlik_no}</p>
+              <p><strong>Şikayet Açıklaması: </strong> {selectedComplaint.description || "Açıklama girilmemiş"}</p>
               <p>Güven skoru: %{Math.round(selectedComplaint.confidence_score * 100)}</p>
 
               <select

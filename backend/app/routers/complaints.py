@@ -98,6 +98,15 @@ def get_complaint(complaint_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Şikayet bulunamadı")
     return complaint
 
+@router.get("/track/{tracking_code}", response_model=schemas.ComplaintResponse)
+def track_complaint(tracking_code: str, db: Session = Depends(get_db)):
+    complaint = db.query(models.Complaint).filter(
+        models.Complaint.tracking_code == tracking_code
+    ).first()
+    if not complaint:
+        raise HTTPException(status_code=404, detail="Bu takip numarasıyla bir şikayet bulunamadı")
+    return complaint
+
 @router.patch("/{complaint_id}/status", response_model=schemas.ComplaintResponse)
 def update_complaint_status(
     complaint_id: int,

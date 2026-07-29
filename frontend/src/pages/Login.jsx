@@ -18,6 +18,8 @@ function Login() {
     setFormData({ ...formData, [name]: value });
   };
 
+  const [showPassword, setShowPassword] = useState(false);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     setError(null);
@@ -55,14 +57,23 @@ function Login() {
 
         <div className="auth-section">
           <label className="section-label">Şifre</label>
-          <input
-            className="auth-input"
-            name="password"
-            type="password"
-            placeholder="Şifreniz"
-            value={formData.password}
-            onChange={handleChange}
-          />
+          <div className="password-wrapper">
+            <input
+              className="auth-input"
+              name="password"
+              type={showPassword ? "text" : "password"}
+              placeholder="Şifreniz"
+              value={formData.password}
+              onChange={handleChange}
+            />
+            <button
+              className="password-toggle"
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+            >
+              {showPassword ? "🔓" : "🔒"}
+            </button>
+          </div>
         </div>
 
         <button type="submit" className="auth-button">Giriş Yap</button>

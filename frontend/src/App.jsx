@@ -8,6 +8,7 @@ import AdminPanel from "./pages/Adminpanel";
 import { useAuth } from './context/AuthContext'
 import ProtectedRoute from "./components/ProtectedRoute";
 import MyComplaints from './pages/MyComplaints'
+import TrackComplaint from './pages/TrackComplaint'
 
 function App() {
   const { token, role, logout } = useAuth();
@@ -45,6 +46,7 @@ function App() {
               <AdminPanel />
             </ProtectedRoute>
           } />
+        <Route path="/sorgula" element={<TrackComplaint />} />
         <Route path="/gecmis-basvurularim"
           element={
             <ProtectedRoute requiredRole="user">

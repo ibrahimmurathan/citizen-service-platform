@@ -8,6 +8,7 @@ class UserInfo(BaseModel):
     user_full_name: str
     user_email: str
     user_phone_number: str
+    tc_kimlik_no: Optional[str] = None
 
     class Config:
         from_attributes = True
@@ -35,6 +36,7 @@ class UserRegister(BaseModel):
     user_full_name: str
     user_email: str
     user_phone_number: str
+    tc_kimlik_no: str
     password: str
 
 class LoginRequest(BaseModel):

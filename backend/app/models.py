@@ -59,6 +59,7 @@ class User(Base):
     user_full_name = Column(String)
     user_email = Column(String, unique=True, index=True)
     user_phone_number = Column(String)
+    tc_kimlik_no = Column(String, unique=True, index=True, nullable=True)
     user_hashed_password = Column(String)
     created_at = Column(DateTime, default=datetime.utcnow)
 

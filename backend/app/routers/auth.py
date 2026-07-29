@@ -10,14 +10,22 @@ router = APIRouter(prefix="/auth", tags=["auth"])
 
 @router.post("/register", response_model=schemas.Token)
 def register(user_data: schemas.UserRegister, db: Session = Depends(get_db)):
+    if not user_data.tc_kimlik_no.isdigit() or len(user_data.tc_kimlik_no) != 11:
+        raise HTTPException(status_code=400, detail="TC Kimlik No 11 haneli ve yalnızca rakamlardan oluşmalıdır")
+
     existing_user = db.query(models.User).filter(models.User.user_email == user_data.user_email).first()
     if existing_user:
         raise HTTPException(status_code=400, detail="Bu email zaten kayıtlı")
+
+    existing_tc = db.query(models.User).filter(models.User.tc_kimlik_no == user_data.tc_kimlik_no).first()
+    if existing_tc:
+        raise HTTPException(status_code=400, detail="Bu TC Kimlik No zaten kayıtlı")
 
     new_user = models.User(
         user_full_name=user_data.user_full_name,
         user_email=user_data.user_email,
         user_phone_number=user_data.user_phone_number,
+        tc_kimlik_no=user_data.tc_kimlik_no,
         user_hashed_password=hash_password(user_data.password),
     )
     db.add(new_user)
