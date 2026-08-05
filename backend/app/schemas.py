@@ -67,3 +67,11 @@ class TransferResponse(BaseModel):
 
 class TransferRespondRequest(BaseModel):
     approve: bool
+
+class ChangePasswordRequest(BaseModel):
+    current_password: str
+    new_password: str
+
+class ChangeEmailRequest(BaseModel):
+    password: str
+    new_email: str

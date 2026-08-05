@@ -35,3 +35,112 @@
   padding: 8px 16px;
   border-radius: 6px;
 }
+
+/* ── Navbar Kullanıcı Dropdown ── */
+.navbar-user-menu {
+  position: relative;
+}
+
+.navbar-user-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 24px;
+  padding: 5px 12px 5px 6px;
+  cursor: pointer;
+  color: white;
+  font-size: 14px;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+
+.navbar-user-btn:hover {
+  background: rgba(255, 255, 255, 0.22);
+}
+
+.navbar-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
+  font-weight: 700;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.navbar-user-name {
+  font-weight: 500;
+  color: white;
+}
+
+.navbar-chevron {
+  font-size: 11px;
+  color: rgba(255, 255, 255, 0.7);
+  transition: transform 0.2s;
+  display: inline-block;
+}
+
+.navbar-chevron.open {
+  transform: rotate(180deg);
+}
+
+.navbar-dropdown {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  min-width: 175px;
+  z-index: 500;
+  overflow: hidden;
+  animation: navDropdownIn 0.15s ease;
+}
+
+@keyframes navDropdownIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.navbar-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 11px 16px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 14px;
+  color: #1e2a4a !important;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.12s;
+}
+
+.navbar-dropdown-item:hover {
+  background: #f1f5f9;
+}
+
+.navbar-dropdown-logout {
+  color: #dc2626 !important;
+  border-top: 1px solid #f1f5f9;
+}
+
+.navbar-dropdown-logout:hover {
+  background: #fff1f2;
+}

@@ -113,3 +113,38 @@ export async function trackComplaint(trackingCode) {
   if (!response.ok) throw new Error("Şikayet bulunamadı");
   return response.json();
 }
+
+export async function changePassword(currentPassword, newPassword, token) {
+  const response = await fetch(`${API_BASE}/auth/change-password`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({
+      current_password: currentPassword,
+      new_password: newPassword,
+    }),
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.detail || "Şifre değiştirilemedi");
+  }
+  return response.json();
+}
+
+export async function changeEmail(password, newEmail, token) {
+  const response = await fetch(`${API_BASE}/auth/change-email`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ password, new_email: newEmail }),
+  });
+  if (!response.ok) {
+    const err = await response.json().catch(() => ({}));
+    throw new Error(err.detail || "E-posta değiştirilemedi");
+  }
+  return response.json();
+}

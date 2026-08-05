@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { MapContainer, TileLayer, Marker } from "react-leaflet";
 import { useAuth } from "../context/AuthContext";
 import {
@@ -9,6 +9,7 @@ import {
   getOutgoingTransfers,
   respondToTransfer,
 } from "../services/api";
+import ChangePasswordModal from "./ChangePasswordModal";
 import "leaflet/dist/leaflet.css";
 import "./AdminPanel.css";
 
@@ -29,8 +30,11 @@ const CATEGORY_LABELS = {
 };
 
 function AdminPanel() {
-  const { token, fullName, role } = useAuth();
+  const { token, fullName, role, logout } = useAuth();
   const [complaints, setComplaints] = useState([]);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [showChangePw, setShowChangePw] = useState(false);
+  const dropdownRef = useRef(null);
   const [deletedComplaints, setDeletedComplaints] = useState([]);
   const [incomingTransfers, setIncomingTransfers] = useState([]);
   const [outgoingTransfers, setOutgoingTransfers] = useState([]);
@@ -81,6 +85,17 @@ function AdminPanel() {
     loadIncomingTransfers();
     loadOutgoingTransfers();
   }, [token]);
+
+  // Dropdown dışına tıklanınca kapanması için
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
 
   const handleStatusChange = async (complaintId, newStatus) => {
     try {
@@ -178,7 +193,35 @@ function AdminPanel() {
     <div className="admin-panel">
       <header className="admin-header">
         <h1>Admin Paneli</h1>
-        <span>Hoş geldiniz, {fullName}</span>
+        <div className="admin-user-menu" ref={dropdownRef}>
+          <button
+            id="admin-user-menu-btn"
+            className="admin-user-btn"
+            onClick={() => setDropdownOpen((v) => !v)}
+          >
+            <span className="admin-avatar">{fullName?.charAt(0).toUpperCase()}</span>
+            <span className="admin-user-name">Hoş geldiniz, {fullName}</span>
+            <span className={`admin-chevron ${dropdownOpen ? "open" : ""}`}>▾</span>
+          </button>
+          {dropdownOpen && (
+            <div className="admin-dropdown">
+              <button
+                id="change-pw-menu-item"
+                className="admin-dropdown-item"
+                onClick={() => { setShowChangePw(true); setDropdownOpen(false); }}
+              >
+                🔑 Şifre Değiştir
+              </button>
+              <button
+                id="logout-menu-item"
+                className="admin-dropdown-item admin-dropdown-logout"
+                onClick={logout}
+              >
+                🚪 Çıkış Yap
+              </button>
+            </div>
+          )}
+        </div>
       </header>
 
       {error && <p className="error-text">{error}</p>}
@@ -400,6 +443,10 @@ function AdminPanel() {
             </div>
           </div>
         </div>
+      )}
+
+      {showChangePw && (
+        <ChangePasswordModal onClose={() => setShowChangePw(false)} />
       )}
     </div>
   );

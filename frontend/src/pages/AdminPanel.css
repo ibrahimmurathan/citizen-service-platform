@@ -418,3 +418,248 @@
 .stat-reddedildi {
   border-top-color: #ef4444;
 }
+
+/* ── Admin User Dropdown ── */
+.admin-user-menu {
+  position: relative;
+}
+
+.admin-user-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  border-radius: 24px;
+  padding: 6px 14px 6px 8px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #1e2a4a;
+  font-family: inherit;
+  transition: background 0.15s, box-shadow 0.15s;
+}
+
+.admin-user-btn:hover {
+  background: #e2e8f0;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.admin-avatar {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: #2563eb;
+  color: white;
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.admin-user-name {
+  font-weight: 500;
+}
+
+.admin-chevron {
+  font-size: 12px;
+  color: #64748b;
+  transition: transform 0.2s;
+  display: inline-block;
+}
+
+.admin-chevron.open {
+  transform: rotate(180deg);
+}
+
+.admin-dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  background: white;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  min-width: 180px;
+  z-index: 500;
+  overflow: hidden;
+  animation: dropdownFadeIn 0.15s ease;
+}
+
+@keyframes dropdownFadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.admin-dropdown-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 11px 16px;
+  background: none;
+  border: none;
+  text-align: left;
+  font-size: 14px;
+  color: #1e2a4a;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.12s;
+}
+
+.admin-dropdown-item:hover {
+  background: #f1f5f9;
+}
+
+.admin-dropdown-logout {
+  color: #dc2626;
+  border-top: 1px solid #f1f5f9;
+}
+
+.admin-dropdown-logout:hover {
+  background: #fff1f2;
+}
+
+/* ── Şifre Değiştir Modal ── */
+.change-pw-modal {
+  padding: 0;
+  max-width: 400px;
+}
+
+.change-pw-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 22px 24px 16px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.change-pw-icon {
+  font-size: 22px;
+}
+
+.change-pw-title {
+  font-size: 17px;
+  font-weight: 700;
+  color: #1e2a4a;
+  margin: 0;
+}
+
+.change-pw-form {
+  padding: 20px 24px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.change-pw-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.change-pw-field label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.change-pw-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.change-pw-input-wrap input {
+  width: 100%;
+  padding: 9px 38px 9px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #1e2a4a;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  outline: none;
+}
+
+.change-pw-input-wrap input:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.12);
+}
+
+.change-pw-input-wrap input.input-error {
+  border-color: #ef4444;
+}
+
+.toggle-pw-btn {
+  position: absolute;
+  right: 8px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 2px;
+  line-height: 1;
+  color: #94a3b8;
+}
+
+.field-error-msg {
+  font-size: 12px;
+  color: #dc2626;
+  margin-top: 2px;
+}
+
+.change-pw-error {
+  font-size: 13px;
+  color: #dc2626;
+  background: #fff1f2;
+  border: 1px solid #fecdd3;
+  border-radius: 8px;
+  padding: 8px 12px;
+  margin: 0;
+}
+
+.change-pw-submit {
+  width: 100%;
+  padding: 11px;
+  background: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.15s, opacity 0.15s;
+  margin-top: 4px;
+}
+
+.change-pw-submit:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.change-pw-submit:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.change-pw-success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 40px 24px;
+  text-align: center;
+  color: #166534;
+}
+
+.change-pw-success-icon {
+  font-size: 40px;
+}
+
+.change-pw-success p {
+  font-size: 15px;
+  font-weight: 600;
+  margin: 0;
+}
