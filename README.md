@@ -69,6 +69,7 @@ Beş kategori, gerçek belediye daire başkanlıklarına karşılık gelecek şe
 - React Router
 - React Leaflet (OpenStreetMap tabanlı harita entegrasyonu)
 - Context API ile kimlik doğrulama durumu yönetimi
+- Docker ve Docker Compose
 
 **Model eğitimi**
 - Google Colab (ücretsiz GPU ortamı)
@@ -111,11 +112,13 @@ citizen-service-platform/
 │   ├── Dockerfile
 │   └── requirements.txt
 ├── frontend/
-│   └── src/
-│       ├── pages/
-│       ├── components/
-│       ├── context/
-│       └── services/
+│   ├── src/
+│   │   ├── pages/
+│   │   ├── components/
+│   │   ├── context/
+│   │   └── services/
+│   ├── Dockerfile
+│   └── .dockerignore
 └── docker-compose.yml
 ```
 
@@ -124,26 +127,27 @@ citizen-service-platform/
 ### Ön Koşullar
 
 - Docker ve Docker Compose
-- Node.js ve npm
 
-### Backend
+### Çalıştırma
+
+Proje kök dizininde tek komutla tüm servisler ayağa kalkar:
 
 ```bash
-cd backend
 docker compose up -d --build
 ```
 
-API, `http://localhost:8000` adresinde çalışır. Otomatik oluşturulan API dokümantasyonuna `http://localhost:8000/docs` adresinden erişilebilir.
+| Servis | Adres |
+|---|---|
+| Backend API | http://localhost:8000 |
+| API Dokümantasyonu | http://localhost:8000/docs |
+| Frontend | http://localhost:5173 |
 
-### Frontend
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Uygulama, `http://localhost:5173` adresinde çalışır.
+> **Not:** `frontend/src/` altındaki kod değişiklikleri volume mount sayesinde container'ı yeniden build etmeye gerek kalmadan (~500ms içinde) tarayıcıya yansır.
+>
+> Dockerfile veya `package.json` değişirse image'ı yeniden build etmek gerekir:
+> ```bash
+> docker compose up -d --build frontend
+> ```
 
 ### Admin Hesapları Oluşturma
 
@@ -194,7 +198,6 @@ Eğitilen model dosyaları, veritabanı boyutu nedeniyle bu repoya dahil edilmem
 
 ## Bilinen Sınırlamalar ve Gelecek Çalışmalar
 
-- Frontend şu an yalnızca yerel geliştirme sunucusu (`npm run dev`) ile çalışmaktadır; Docker Compose'a dahil edilmesi planlanmaktadır
 - Model, birden fazla sorunun aynı fotoğrafta bulunduğu karışık görsellerde daha düşük doğruluk göstermektedir
 - Alt kategori tespiti (örneğin yol ve altyapı kategorisi içinde çukur/kaldırım ayrımı) şu an yapılmamaktadır
 - Email veya SMS ile durum bildirimi henüz mevcut değildir
